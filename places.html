@@ -1,0 +1,460 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .page { font-family: 'DM Sans', sans-serif; background: var(--color-background-tertiary); min-height: 100vh; }
+
+  .hero {
+    background: #1a4a3a;
+    color: #fff;
+    padding: 48px 32px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 24px);
+  }
+  .hero-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .hero-nav .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    color: #a8d5c2;
+  }
+  .hero-nav .nav-links {
+    display: flex;
+    gap: 24px;
+  }
+  .hero-nav .nav-links a {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .hero-nav .nav-links a:hover, .hero-nav .nav-links a.active { color: #a8d5c2; }
+
+  .hero-content { position: relative; }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(168,213,194,0.15);
+    border: 0.5px solid rgba(168,213,194,0.3);
+    border-radius: 99px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: #a8d5c2;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero-eyebrow span { width: 6px; height: 6px; border-radius: 50%; background: #a8d5c2; display: inline-block; }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 14px;
+    color: #fff;
+  }
+  .hero h1 em { color: #a8d5c2; font-style: normal; }
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    max-width: 420px;
+    line-height: 1.6;
+  }
+
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    background: var(--color-background-primary);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    padding: 0 32px;
+  }
+  .stat-item {
+    padding: 18px 32px 18px 0;
+    margin-right: 32px;
+    border-right: 0.5px solid var(--color-border-tertiary);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num { font-size: 22px; font-weight: 500; color: #1a4a3a; }
+  .stat-label { font-size: 12px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 32px;
+    background: var(--color-background-primary);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .filter-btn {
+    padding: 7px 18px;
+    border-radius: 99px;
+    border: 0.5px solid var(--color-border-tertiary);
+    background: transparent;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .filter-btn:hover { border-color: #1a4a3a; color: #1a4a3a; }
+  .filter-btn.active {
+    background: #1a4a3a;
+    border-color: #1a4a3a;
+    color: #fff;
+    font-weight: 500;
+  }
+  .search-wrap {
+    margin-left: auto;
+    position: relative;
+  }
+  .search-wrap input {
+    padding: 7px 16px 7px 36px;
+    border-radius: 99px;
+    border: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-secondary);
+    font-size: 13px;
+    color: var(--color-text-primary);
+    font-family: 'DM Sans', sans-serif;
+    width: 220px;
+    outline: none;
+  }
+  .search-wrap input:focus { border-color: #1a4a3a; }
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-tertiary);
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  .listing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 28px 32px 48px;
+  }
+
+  .spot-card {
+    background: var(--color-background-primary);
+    border-radius: var(--border-radius-lg);
+    border: 0.5px solid var(--color-border-tertiary);
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+    cursor: pointer;
+    animation: fadeUp 0.4s ease both;
+  }
+  .spot-card:hover { transform: translateY(-3px); border-color: var(--color-border-secondary); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    background: #c8ddd5;
+    position: relative;
+  }
+  .card-img-placeholder {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+  }
+  .card-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(26,74,58,0.85);
+    color: #a8d5c2;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 99px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .card-img-wrap { position: relative; }
+
+  .card-body { padding: 18px 20px 20px; }
+  .card-category {
+    font-size: 11px;
+    color: #1a4a3a;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+    line-height: 1.25;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+  .card-cta {
+    font-size: 12px;
+    font-weight: 500;
+    color: #1a4a3a;
+    border: 0.5px solid #1a4a3a;
+    padding: 5px 14px;
+    border-radius: 99px;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .card-cta:hover { background: #1a4a3a; color: #fff; }
+
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 64px 0;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+  }
+
+  .section-header {
+    padding: 28px 32px 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+  .section-count {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+</style>
+
+<div class="page">
+  <div class="hero">
+    <div class="hero-nav">
+      <div class="logo">Kabankalan City</div>
+      <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#" class="active">Tourist Spots</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow"><span></span>Negros Occidental</div>
+      <h1>All Tourist<br><em>Destinations</em></h1>
+      <p class="hero-sub">Explore every corner of Kabankalan — from cascading waterfalls to vibrant festivals.</p>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num" id="total-count">8</div>
+      <div class="stat-label">Total Places</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4</div>
+      <div class="stat-label">Categories</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">1</div>
+      <div class="stat-label">City</div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="filter-btn active" data-filter="all">All places</button>
+    <button class="filter-btn" data-filter="nature">Nature</button>
+    <button class="filter-btn" data-filter="culture">Culture</button>
+    <button class="filter-btn" data-filter="adventure">Adventure</button>
+    <button class="filter-btn" data-filter="landmark">Landmark</button>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" placeholder="Search places..." id="search-input">
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-title">All Places</div>
+    <div class="section-count" id="result-count">8 places</div>
+  </div>
+
+  <div class="listing-grid" id="listing-grid"></div>
+</div>
+
+<script>
+const spots = [
+  {
+    name: "Mag-aso Falls",
+    category: "nature",
+    categoryLabel: "Nature",
+    desc: "A stunning multi-tiered waterfall tucked within lush tropical forest. Ideal for swimming, picnics, and nature photography.",
+    emoji: "💧",
+    tag: "Barangay Oringao",
+    featured: true
+  },
+  {
+    name: "Balicaocao Eco Park",
+    category: "nature",
+    categoryLabel: "Nature",
+    desc: "A peaceful eco-park offering trekking trails, fresh mountain air, and scenic views of the surrounding countryside.",
+    emoji: "🌿",
+    tag: "Barangay Orong",
+    featured: false
+  },
+  {
+    name: "Hilabangan River",
+    category: "nature",
+    categoryLabel: "Nature",
+    desc: "A serene river with crystal-clear waters, popular among locals for fishing, kayaking, and lazy afternoon dips.",
+    emoji: "🏞",
+    tag: "Hilabangan",
+    featured: false
+  },
+  {
+    name: "Sinulog Festival",
+    category: "culture",
+    categoryLabel: "Culture",
+    desc: "A vibrant street festival celebrated every January, featuring Ati-atihan-inspired dances, brass bands, and colorful regalia.",
+    emoji: "🎉",
+    tag: "City Center",
+    featured: true
+  },
+  {
+    name: "St. Joseph Cathedral",
+    category: "landmark",
+    categoryLabel: "Landmark",
+    desc: "The heritage church at the heart of Kabankalan, a centuries-old Spanish colonial structure that anchors faith and history.",
+    emoji: "⛪",
+    tag: "City Proper",
+    featured: false
+  },
+  {
+    name: "Kabankalan Public Market",
+    category: "culture",
+    categoryLabel: "Culture",
+    desc: "A bustling market brimming with local produce, dried fish, native delicacies, and the everyday life of Kabankaleños.",
+    emoji: "🛒",
+    tag: "City Proper",
+    featured: false
+  },
+  
+  {
+    name: "Inapoy Falls",
+    category: "nature",
+    categoryLabel: "Nature",
+    desc: "A hidden gem waterfall accessible through a short jungle trail, known for its cool, refreshing pools and tranquil setting.",
+    emoji: "🌊",
+    tag: "Barangay Inapoy",
+    featured: false
+  }
+];
+
+let activeFilter = 'all';
+let searchQuery = '';
+
+function render() {
+  const grid = document.getElementById('listing-grid');
+  const filtered = spots.filter(s => {
+    const matchFilter = activeFilter === 'all' || s.category === activeFilter;
+    const matchSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.desc.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchFilter && matchSearch;
+  });
+
+  document.getElementById('result-count').textContent = filtered.length + ' place' + (filtered.length !== 1 ? 's' : '');
+  document.getElementById('total-count').textContent = spots.length;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty-state">No places match your search.</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map((s, i) => `
+    <div class="spot-card" style="animation-delay:${i * 0.06}s">
+      <div class="card-img-wrap">
+        <div class="card-img-placeholder" style="background:${getBg(s.category)}">${s.emoji}</div>
+        ${s.featured ? '<div class="card-badge">Featured</div>' : ''}
+      </div>
+      <div class="card-body">
+        <div class="card-category">${s.categoryLabel}</div>
+        <div class="card-title">${s.name}</div>
+        <div class="card-desc">${s.desc}</div>
+        <div class="card-meta">
+          <span class="card-tag">📍 ${s.tag}</span>
+          <button class="card-cta" onclick="sendPrompt('Tell me more about ${s.name} in Kabankalan City')">Learn more ↗</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getBg(cat) {
+  const map = { nature: '#d4ede4', culture: '#ffe8d6', adventure: '#dce8f5', landmark: '#f0e6f6' };
+  return map[cat] || '#e8e8e8';
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+document.getElementById('search-input').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  render();
+});
+
+render();
+</script>
